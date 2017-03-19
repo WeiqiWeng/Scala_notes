@@ -4,6 +4,9 @@ package scala_note
   to better understand the concept.
 */
 object recursion_intermediate {
-	
+	// e.g.1
+  /*
+		
+	*/
 
 }

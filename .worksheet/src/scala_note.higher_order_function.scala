@@ -89,6 +89,28 @@ object higher_order_function {;import org.scalaide.worksheet.runtime.library.Wor
 	
 	def sumv5(start: Int, end: Int, acc: Int) = mapReduceTailRecCurrying(x => x, (x, y) => x + y)(start, end, acc);System.out.println("""sumv5: (start: Int, end: Int, acc: Int)Int""");$skip(19); val res$6 = 
 	
-	sumv5(5, 10, 0);System.out.println("""res6: Int = """ + $show(res$6))}
+	sumv5(5, 10, 0);System.out.println("""res6: Int = """ + $show(res$6));$skip(480); 
+	
+	// e.g.4
+  /*
+		In the last example, we use higher order function and currying, define a function to
+		find fixed point: find x such that f(x) = x. Here we stablize by average: (next+curVal)/2.
+		Otherwise, in some cases, the step will be too large for the value to converge.
+	*/
+	
+	def findFixedPoint(f: Double => Double)(curVal: Double): Double = {
+		val next = f(curVal)
+		if (Math.abs(curVal - next) / next / next < 0.001) next
+		else findFixedPoint(f)((next+curVal)/2)
+	};System.out.println("""findFixedPoint: (f: Double => Double)(curVal: Double)Double""");$skip(33); val res$7 = 
+	
+	findFixedPoint(x => x/2+1)(0);System.out.println("""res7: Double = """ + $show(res$7));$skip(205); 
+	
+	// In fact, we can redefine sqrt by findFixedPoint.
+	// here avergeStablizing takes a function as parameter and return a function.
+	def avergeStablizing(f: Double => Double)(x: Double) = (x + f(x)) / 2;System.out.println("""avergeStablizing: (f: Double => Double)(x: Double)Double""");$skip(73); 
+	def sqrtv2(x: Double) = findFixedPoint(avergeStablizing(y => x / y))(1);System.out.println("""sqrtv2: (x: Double)Double""");$skip(15); val res$8 = 
+	
+	sqrtv2(247);System.out.println("""res8: Double = """ + $show(res$8))}
 
 }
