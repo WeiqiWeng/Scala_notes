@@ -1,3 +1,4 @@
+// command(ctrl)+shift+F to reindent on mac(windows)
 package scala_note
 /*
   In this worksheet we will talk about:
@@ -7,7 +8,7 @@ package scala_note
 */
 object recursion {
   /*
-		Scala is both an objective oriented and functional programming language.
+		Scala is both an objective oriented and functional language.
 		The objective oriented part is quite similar to Java, therefore the basic syntax can be
 		compared to Java except the way to define a function.
 	*/
@@ -136,5 +137,41 @@ object recursion {
                                                   //| 1.002075063550277E10
                                                   //| 1.0000021484861237E10
                                                   //| res3: Double = 1.0000021484861237E10
-
+	// e.g.5
+  /*
+		An import type of recursion is tail recursion. Roughly speaking, a function (can be itself) gets
+		called at last action in the recursion function. It's important since it can be done with constant
+		space in memory, such as stack.
+	*/
+	
+	// one example would be gcd
+	def gcd(n: Int, m: Int): Int = {
+		if (m == 0) n
+		else gcd(m, n % m)
+	}                                         //> gcd: (n: Int, m: Int)Int
+	
+	gcd(63, 49)                               //> res4: Int = 7
+	
+	// a tail recursive version factorial
+	// the key is to maintain an accumulator
+	def factorialv1(n: Int): Int = {
+		def loop(acc: Int, x: Int): Int = {
+			if (x == 1) acc
+			else loop(acc*x, x-1)
+		}
+		loop(1, n)
+	}                                         //> factorialv1: (n: Int)Int
+	
+	factorialv1(5)                            //> res5: Int = 120
+	
+	// a tail recursive version factorial: without subfunction
+	def factorialv2(n: Int, acc: Int): Int = {
+		if (n == 1) acc
+		else factorialv2(n-1, acc*n)
+	}                                         //> factorialv2: (n: Int, acc: Int)Int
+	
+	factorialv2(5, 1)                         //> res6: Int = 120
+	
+	
+	
 }

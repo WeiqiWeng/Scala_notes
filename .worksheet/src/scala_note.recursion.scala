@@ -1,3 +1,4 @@
+// command(ctrl)+shift+F to reindent on mac(windows)
 package scala_note
 /*
   In this worksheet we will talk about:
@@ -5,9 +6,9 @@ package scala_note
   2. recursion
  	with several classic examples
 */
-object recursion {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(990); 
+object recursion {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(1031); 
   /*
-		Scala is both an objective oriented and functional programming language.
+		Scala is both an objective oriented and functional language.
 		The objective oriented part is quite similar to Java, therefore the basic syntax can be
 		compared to Java except the way to define a function.
 	*/
@@ -79,6 +80,42 @@ object recursion {;import org.scalaide.worksheet.runtime.library.WorksheetSuppor
 	sqrtNewtonMethod(1, 2.0);System.out.println("""res1: Double = """ + $show(res$1));$skip(27); val res$2 = 
 	sqrtNewtonMethod(1, 1e-6);System.out.println("""res2: Double = """ + $show(res$2));$skip(29); val res$3 = 
 	
-	sqrtNewtonMethod(1, 1e20);System.out.println("""res3: Double = """ + $show(res$3))}
-
+	sqrtNewtonMethod(1, 1e20);System.out.println("""res3: Double = """ + $show(res$3));$skip(358); 
+	// e.g.5
+  /*
+		An import type of recursion is tail recursion. Roughly speaking, a function (can be itself) gets
+		called at last action in the recursion function. It's important since it can be done with constant
+		space in memory, such as stack.
+	*/
+	
+	// one example would be gcd
+	def gcd(n: Int, m: Int): Int = {
+		if (m == 0) n
+		else gcd(m, n % m)
+	};System.out.println("""gcd: (n: Int, m: Int)Int""");$skip(15); val res$4 = 
+	
+	gcd(63, 49);System.out.println("""res4: Int = """ + $show(res$4));$skip(219); 
+	
+	// a tail recursive version factorial
+	// the key is to maintain an accumulator
+	def factorialv1(n: Int): Int = {
+		def loop(acc: Int, x: Int): Int = {
+			if (x == 1) acc
+			else loop(acc*x, x-1)
+		}
+		loop(1, n)
+	};System.out.println("""factorialv1: (n: Int)Int""");$skip(18); val res$5 = 
+	
+	factorialv1(5);System.out.println("""res5: Int = """ + $show(res$5));$skip(158); 
+	
+	// a tail recursive version factorial: without subfunction
+	def factorialv2(n: Int, acc: Int): Int = {
+		if (n == 1) acc
+		else factorialv2(n-1, acc*n)
+	};System.out.println("""factorialv2: (n: Int, acc: Int)Int""");$skip(21); val res$6 = 
+	
+	factorialv2(5, 1);System.out.println("""res6: Int = """ + $show(res$6))}
+	
+	
+	
 }
