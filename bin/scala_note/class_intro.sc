@@ -8,15 +8,15 @@ package scala_note
 */
 object class_intro {
 
-  val r1 = new Rational(1, 2)                     //> r1  : scala_note.Rational = 1/2
-  val r2 = new Rational(2, 3)                     //> r2  : scala_note.Rational = 2/3
-  val r3 = new Rational(1, 4)                     //> r3  : scala_note.Rational = 1/4
-  val r4 = new Rational(2)                        //> r4  : scala_note.Rational = 2/1
-  r1.neg                                          //> res0: scala_note.Rational = 1/-2
-  -r1                                             //> res1: scala_note.Rational = 1/-2
+  val r1 = new Rational(1, 2)                     //> r1  : scala_note#29.Rational#636920 = 1/2
+  val r2 = new Rational(2, 3)                     //> r2  : scala_note#29.Rational#636920 = 2/3
+  val r3 = new Rational(1, 4)                     //> r3  : scala_note#29.Rational#636920 = 1/4
+  val r4 = new Rational(2)                        //> r4  : scala_note#29.Rational#636920 = 2/1
+  r1.neg                                          //> res0: scala_note#29.Rational#636920 = 1/-2
+  -r1                                             //> res1: scala_note#29.Rational#636920 = 1/-2
   println(r1 + r2)                                //> 7/6
-  r2 < r1                                         //> res2: Boolean = false
-  r1 max r2                                       //> res3: scala_note.Rational = 2/3
+  r2 < r1                                         //> res2: Boolean#2531 = false
+  r1 max r2                                       //> res3: scala_note#29.Rational#636920 = 2/3
   println(r1 - r2 - r3)                           //> 5/-12
 
   // here r1 mul r2 is equivalent to r1 * r2 and r1.mul(r2)

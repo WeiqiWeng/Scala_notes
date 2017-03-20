@@ -8,15 +8,15 @@ package scala_note
 */
 object class_intro {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(212); 
 
-  val r1 = new Rational(1, 2);System.out.println("""r1  : scala_note.Rational = """ + $show(r1 ));$skip(30); 
-  val r2 = new Rational(2, 3);System.out.println("""r2  : scala_note.Rational = """ + $show(r2 ));$skip(30); 
-  val r3 = new Rational(1, 4);System.out.println("""r3  : scala_note.Rational = """ + $show(r3 ));$skip(27); 
-  val r4 = new Rational(2);System.out.println("""r4  : scala_note.Rational = """ + $show(r4 ));$skip(9); val res$0 = 
-  r1.neg;System.out.println("""res0: scala_note.Rational = """ + $show(res$0));$skip(6); val res$1 = 
-  -r1;System.out.println("""res1: scala_note.Rational = """ + $show(res$1));$skip(19); 
+  val r1 = new Rational(1, 2);System.out.println("""r1  : scala_note#29.Rational#636920 = """ + $show(r1 ));$skip(30); 
+  val r2 = new Rational(2, 3);System.out.println("""r2  : scala_note#29.Rational#636920 = """ + $show(r2 ));$skip(30); 
+  val r3 = new Rational(1, 4);System.out.println("""r3  : scala_note#29.Rational#636920 = """ + $show(r3 ));$skip(27); 
+  val r4 = new Rational(2);System.out.println("""r4  : scala_note#29.Rational#636920 = """ + $show(r4 ));$skip(9); val res$0 = 
+  r1.neg;System.out.println("""res0: scala_note#29.Rational#636920 = """ + $show(res$0));$skip(6); val res$1 = 
+  -r1;System.out.println("""res1: scala_note#29.Rational#636920 = """ + $show(res$1));$skip(19); 
   println(r1 + r2);$skip(10); val res$2 = 
-  r2 < r1;System.out.println("""res2: Boolean = """ + $show(res$2));$skip(12); val res$3 = 
-  r1 max r2;System.out.println("""res3: scala_note.Rational = """ + $show(res$3));$skip(24); 
+  r2 < r1;System.out.println("""res2: Boolean#2531 = """ + $show(res$2));$skip(12); val res$3 = 
+  r1 max r2;System.out.println("""res3: scala_note#29.Rational#636920 = """ + $show(res$3));$skip(24); 
   println(r1 - r2 - r3);$skip(82); 
 
   // here r1 mul r2 is equivalent to r1 * r2 and r1.mul(r2)
