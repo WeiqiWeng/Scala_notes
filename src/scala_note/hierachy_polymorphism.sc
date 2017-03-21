@@ -3,15 +3,17 @@ package scala_note
 /*
   In this worksheet we will talk about:
   1. class hierachy, how to organize classes
-  2. abstract class
+  2. abstract class and trait
   3. polymorphism
 */
 object hierachy_polymorphism {
   val l1 = new IntLinkedList(1, new IntLinkedList(2, new IntLinkedList(3, new Empty)))
-                                                  //> l1  : scala_note#29.IntLinkedList#1143097 = 1 2 3 
-  l1.contain(2)                                   //> res0: Boolean#2531 = true
-  val l2 = l1.include(1)                          //> l2  : scala_note#29.IntLinkedList#1143097 = 1 1 2 3 
-  l1 append l2                                    //> res1: scala_note#29.IntLinkedList#1143097 = 1 2 3 1 1 2 3 
+                                                  //> l1  : scala_note.IntLinkedList = 1 2 3 
+  l1.contain(2)                                   //> res0: Boolean = true
+  val l2 = l1.include(1)                          //> l2  : scala_note.IntLinkedList = 1 1 2 3 
+  l2.max()                                        //> res1: Int = 3
+  l2.min()                                        //> res2: Int = 1
+  l1 append l2                                    //> res3: scala_note.IntLinkedList = 1 2 3 1 1 2 3 
 
   val s1 =
     new nonEmptyNode(
@@ -35,8 +37,8 @@ object hierachy_polymorphism {
         new nonEmptyNode(
           7,
           new emptyNode,
-          new emptyNode)))                        //> s1  : scala_note#29.nonEmptyNode#1207430 = 4 2 1 Null Null 3 Null Null 6 5 N
-                                                  //| ull Null 7 Null Null
+          new emptyNode)))                        //> s1  : scala_note.nonEmptyNode = 4 2 1 Null Null 3 Null Null 6 5 Null Null 7 
+                                                  //| Null Null
 
   val s2 =
   	(new emptyNode)
@@ -46,23 +48,23 @@ object hierachy_polymorphism {
   		.include(3)
   		.include(6)
   		.include(5)
-  		.include(7)                       //> s2  : scala_note#29.nonEmptyNode#1207430 = 4 2 1 Null Null 3 Null Null 6 5 N
-                                                  //| ull Null 7 Null Null
+  		.include(7)                       //> s2  : scala_note.nonEmptyNode = 4 2 1 Null Null 3 Null Null 6 5 Null Null 7 
+                                                  //| Null Null
   		
   val s3 =
   (new emptyNode)
   		.include(4)
   		.include(2)
-  		.include(1)                       //> s3  : scala_note#29.nonEmptyNode#1207430 = 4 2 1 Null Null Null Null
+  		.include(1)                       //> s3  : scala_note.nonEmptyNode = 4 2 1 Null Null Null Null
   		
   val s4 =
   (new emptyNode)
   		.include(6)
   		.include(5)
-  		.include(7)                       //> s4  : scala_note#29.nonEmptyNode#1207430 = 6 5 Null Null 7 Null Null
+  		.include(7)                       //> s4  : scala_note.nonEmptyNode = 6 5 Null Null 7 Null Null
   		
- 	s3 union s4                               //> res2: scala_note#29.simpleSet#1168783[Int#1109] = 6 5 2 1 Null Null 4 Null 
-                                                  //| Null Null 7 Null Null
+ 	s3 union s4                               //> res4: scala_note.simpleSet[Int] = 6 5 2 1 Null Null 4 Null Null Null 7 Null
+                                                  //|  Null
 }
 
 // e.g.1
@@ -72,7 +74,7 @@ object hierachy_polymorphism {
 	Note that we apply a type abstraction here to allow more flexibility.
 	Type T needs to be specified when creating classes extending linkedList.
 */
-abstract class linkedList[T] {
+abstract class linkedList[T] extends len with minOrMax[Int] {
   def include(x: T): linkedList[T]
   def contain(x: T): Boolean
   def append(x: linkedList[T]): linkedList[T]
@@ -84,17 +86,38 @@ abstract class linkedList[T] {
 // You can argue that there can be only one Empty list
 // no need to new Empty everytime creating a new non-empty list
 // this can be fixed by change class to object
-class Empty extends linkedList[Int] {
+
+trait len {
+	def length(): Int
+}
+
+trait minOrMax[T] {
+	def min(): T
+	def max(): T
+}
+
+
+class Empty extends linkedList[Int] with len with minOrMax[Int] {
   def include(x: Int) = new IntLinkedList(x, this)
   def contain(x: Int) = false
   def append(x: linkedList[Int]) = x
-
+	def length() = 0
+	def min() = Int.MaxValue
+	def max() = Int.MinValue
   override def toString() = ""
 }
 
-// The following is the definition of linked list consisting of Ints.
-// Here cons is an implicit polymorphism
-class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] {
+
+/*
+	The following is the definition of linked list consisting of Ints.
+	Here cons is an implicit polymorphism. cons will get called in recursion in form
+	of Empty or IntLinkedList. Different form will respond differently when its method
+	gets called in recursion.
+*/
+
+// Also here we show a class can have at most one superclass but several traits implemented.
+// Note that trait can have type parameter, too.
+class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] with len with minOrMax[Int] {
   private def head = x
   private def tail = cons
 
@@ -107,6 +130,13 @@ class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] {
   }
   
   def append(x: linkedList[Int]) = new IntLinkedList(head, tail.append(x))
+  
+  def length() = 1 + tail.length()
+  
+  def min() = Math.min(head, tail.min())
+  
+  def max() = Math.max(head, tail.max())
+  
 
   override def toString() = head + " " + this.tail.toString()
 

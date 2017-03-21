@@ -3,14 +3,16 @@ package scala_note
 /*
   In this worksheet we will talk about:
   1. class hierachy, how to organize classes
-  2. abstract class
+  2. abstract class and trait
   3. polymorphism
 */
-object hierachy_polymorphism {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(266); 
-  val l1 = new IntLinkedList(1, new IntLinkedList(2, new IntLinkedList(3, new Empty)));System.out.println("""l1  : scala_note#29.IntLinkedList#1143097 = """ + $show(l1 ));$skip(16); val res$0 = 
-  l1.contain(2);System.out.println("""res0: Boolean#2531 = """ + $show(res$0));$skip(25); 
-  val l2 = l1.include(1);System.out.println("""l2  : scala_note#29.IntLinkedList#1143097 = """ + $show(l2 ));$skip(15); val res$1 = 
-  l1 append l2;System.out.println("""res1: scala_note#29.IntLinkedList#1143097 = """ + $show(res$1));$skip(475); 
+object hierachy_polymorphism {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(276); 
+  val l1 = new IntLinkedList(1, new IntLinkedList(2, new IntLinkedList(3, new Empty)));System.out.println("""l1  : scala_note.IntLinkedList = """ + $show(l1 ));$skip(16); val res$0 = 
+  l1.contain(2);System.out.println("""res0: Boolean = """ + $show(res$0));$skip(25); 
+  val l2 = l1.include(1);System.out.println("""l2  : scala_note.IntLinkedList = """ + $show(l2 ));$skip(11); val res$1 = 
+  l2.max();System.out.println("""res1: Int = """ + $show(res$1));$skip(11); val res$2 = 
+  l2.min();System.out.println("""res2: Int = """ + $show(res$2));$skip(15); val res$3 = 
+  l1 append l2;System.out.println("""res3: scala_note.IntLinkedList = """ + $show(res$3));$skip(475); 
 
   val s1 =
     new nonEmptyNode(
@@ -34,7 +36,7 @@ object hierachy_polymorphism {;import org.scalaide.worksheet.runtime.library.Wor
         new nonEmptyNode(
           7,
           new emptyNode,
-          new emptyNode)));System.out.println("""s1  : scala_note#29.nonEmptyNode#1207430 = """ + $show(s1 ));$skip(143); 
+          new emptyNode)));System.out.println("""s1  : scala_note.nonEmptyNode = """ + $show(s1 ));$skip(143); 
 
   val s2 =
   	(new emptyNode)
@@ -44,21 +46,21 @@ object hierachy_polymorphism {;import org.scalaide.worksheet.runtime.library.Wor
   		.include(3)
   		.include(6)
   		.include(5)
-  		.include(7);System.out.println("""s2  : scala_note#29.nonEmptyNode#1207430 = """ + $show(s2 ));$skip(82); 
+  		.include(7);System.out.println("""s2  : scala_note.nonEmptyNode = """ + $show(s2 ));$skip(82); 
   		
   val s3 =
   (new emptyNode)
   		.include(4)
   		.include(2)
-  		.include(1);System.out.println("""s3  : scala_note#29.nonEmptyNode#1207430 = """ + $show(s3 ));$skip(82); 
+  		.include(1);System.out.println("""s3  : scala_note.nonEmptyNode = """ + $show(s3 ));$skip(82); 
   		
   val s4 =
   (new emptyNode)
   		.include(6)
   		.include(5)
-  		.include(7);System.out.println("""s4  : scala_note#29.nonEmptyNode#1207430 = """ + $show(s4 ));$skip(19); val res$2 = 
+  		.include(7);System.out.println("""s4  : scala_note.nonEmptyNode = """ + $show(s4 ));$skip(19); val res$4 = 
   		
- 	s3 union s4;System.out.println("""res2: scala_note#29.simpleSet#1168783[Int#1109] = """ + $show(res$2))}
+ 	s3 union s4;System.out.println("""res4: scala_note.simpleSet[Int] = """ + $show(res$4))}
 }
 
 // e.g.1
@@ -68,7 +70,7 @@ object hierachy_polymorphism {;import org.scalaide.worksheet.runtime.library.Wor
 	Note that we apply a type abstraction here to allow more flexibility.
 	Type T needs to be specified when creating classes extending linkedList.
 */
-abstract class linkedList[T] {
+abstract class linkedList[T] extends len with minOrMax[Int] {
   def include(x: T): linkedList[T]
   def contain(x: T): Boolean
   def append(x: linkedList[T]): linkedList[T]
@@ -80,17 +82,38 @@ abstract class linkedList[T] {
 // You can argue that there can be only one Empty list
 // no need to new Empty everytime creating a new non-empty list
 // this can be fixed by change class to object
-class Empty extends linkedList[Int] {
+
+trait len {
+	def length(): Int
+}
+
+trait minOrMax[T] {
+	def min(): T
+	def max(): T
+}
+
+
+class Empty extends linkedList[Int] with len with minOrMax[Int] {
   def include(x: Int) = new IntLinkedList(x, this)
   def contain(x: Int) = false
   def append(x: linkedList[Int]) = x
-
+	def length() = 0
+	def min() = Int.MaxValue
+	def max() = Int.MinValue
   override def toString() = ""
 }
 
-// The following is the definition of linked list consisting of Ints.
-// Here cons is an implicit polymorphism
-class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] {
+
+/*
+	The following is the definition of linked list consisting of Ints.
+	Here cons is an implicit polymorphism. cons will get called in recursion in form
+	of Empty or IntLinkedList. Different form will respond differently when its method
+	gets called in recursion.
+*/
+
+// Also here we show a class can have at most one superclass but several traits implemented.
+// Note that trait can have type parameter, too.
+class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] with len with minOrMax[Int] {
   private def head = x
   private def tail = cons
 
@@ -103,6 +126,13 @@ class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] {
   }
   
   def append(x: linkedList[Int]) = new IntLinkedList(head, tail.append(x))
+  
+  def length() = 1 + tail.length()
+  
+  def min() = Math.min(head, tail.min())
+  
+  def max() = Math.max(head, tail.max())
+  
 
   override def toString() = head + " " + this.tail.toString()
 
