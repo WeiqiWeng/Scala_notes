@@ -11,8 +11,9 @@ object hierachy_polymorphism {;import org.scalaide.worksheet.runtime.library.Wor
   l1.contain(2);System.out.println("""res0: Boolean = """ + $show(res$0));$skip(25); 
   val l2 = l1.include(1);System.out.println("""l2  : scala_note.IntLinkedList = """ + $show(l2 ));$skip(11); val res$1 = 
   l2.max();System.out.println("""res1: Int = """ + $show(res$1));$skip(11); val res$2 = 
-  l2.min();System.out.println("""res2: Int = """ + $show(res$2));$skip(15); val res$3 = 
-  l1 append l2;System.out.println("""res3: scala_note.IntLinkedList = """ + $show(res$3));$skip(475); 
+  l2.min();System.out.println("""res2: Int = """ + $show(res$2));$skip(24); 
+  val l3 = l1 append l2;System.out.println("""l3  : scala_note.IntLinkedList = """ + $show(l3 ));$skip(12); val res$3 = 
+  l3.nth(3);System.out.println("""res3: Int = """ + $show(res$3));$skip(475); 
 
   val s1 =
     new nonEmptyNode(
@@ -60,7 +61,9 @@ object hierachy_polymorphism {;import org.scalaide.worksheet.runtime.library.Wor
   		.include(5)
   		.include(7);System.out.println("""s4  : scala_note.nonEmptyNode = """ + $show(s4 ));$skip(19); val res$4 = 
   		
- 	s3 union s4;System.out.println("""res4: scala_note.simpleSet[Int] = """ + $show(res$4))}
+ 	s3 union s4;System.out.println("""res4: scala_note.simpleSet[Int] = """ + $show(res$4));$skip(18); val res$5 = 
+ 	
+ 	set(1, 2, 3);System.out.println("""res5: scala_note.nonEmptyNode = """ + $show(res$5))}
 }
 
 // e.g.1
@@ -74,6 +77,7 @@ abstract class linkedList[T] extends len with minOrMax[Int] {
   def include(x: T): linkedList[T]
   def contain(x: T): Boolean
   def append(x: linkedList[T]): linkedList[T]
+  def nth(x: Int): T
 }
 
 // Next we create an Empty linked list, which is basically an empty node.
@@ -100,6 +104,7 @@ class Empty extends linkedList[Int] with len with minOrMax[Int] {
 	def length() = 0
 	def min() = Int.MaxValue
 	def max() = Int.MinValue
+	def nth(x: Int) = throw new IndexOutOfBoundsException()
   override def toString() = ""
 }
 
@@ -109,6 +114,8 @@ class Empty extends linkedList[Int] with len with minOrMax[Int] {
 	Here cons is an implicit polymorphism. cons will get called in recursion in form
 	of Empty or IntLinkedList. Different form will respond differently when its method
 	gets called in recursion.
+	We have two major types of polymorphism: subtype and generic. Specifically, inheritance
+	can be viewed as subtype while type parameter is a form of generic.
 */
 
 // Also here we show a class can have at most one superclass but several traits implemented.
@@ -132,8 +139,12 @@ class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] with 
   def min() = Math.min(head, tail.min())
   
   def max() = Math.max(head, tail.max())
-  
 
+  def nth(x: Int) = {
+  	if (x == 0) head
+  	else tail.nth(x-1)
+  }
+ 
   override def toString() = head + " " + this.tail.toString()
 
 }
@@ -179,7 +190,7 @@ class nonEmptyNode(x: Int, leftSubtree: simpleSet[Int], rightSubtree: simpleSet[
   def union(x: simpleSet[Int]) = {
   	((left union right) union x) include value
   }
-
+  
   // With recursion, it's very easy to implement preorder traversal, postorder traversal and
   // inorder traversal.
   // preorder
@@ -198,3 +209,19 @@ class nonEmptyNode(x: Int, leftSubtree: simpleSet[Int], rightSubtree: simpleSet[
 		}
 	*/
 }
+
+// e.g.3
+/*
+	In this example, we will define an object to explain how function is treated as object in
+	Scala.
+*/
+
+object set {
+	def apply(x: Int) = new nonEmptyNode(x, new emptyNode, new emptyNode)
+	def apply(x: Int, y: Int) = new nonEmptyNode(x, new emptyNode, new emptyNode).include(y)
+	def apply(x: Int, y: Int, z: Int) = new nonEmptyNode(x, new emptyNode, new emptyNode).include(y).include(z)
+}
+
+// Basically, each function in Scala is an object with an 'apply' method which can be
+// overloaded.
+ 

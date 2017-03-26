@@ -13,7 +13,8 @@ object hierachy_polymorphism {
   val l2 = l1.include(1)                          //> l2  : scala_note.IntLinkedList = 1 1 2 3 
   l2.max()                                        //> res1: Int = 3
   l2.min()                                        //> res2: Int = 1
-  l1 append l2                                    //> res3: scala_note.IntLinkedList = 1 2 3 1 1 2 3 
+  val l3 = l1 append l2                           //> l3  : scala_note.IntLinkedList = 1 2 3 1 1 2 3 
+  l3.nth(3)                                       //> res3: Int = 1
 
   val s1 =
     new nonEmptyNode(
@@ -65,6 +66,8 @@ object hierachy_polymorphism {
   		
  	s3 union s4                               //> res4: scala_note.simpleSet[Int] = 6 5 2 1 Null Null 4 Null Null Null 7 Null
                                                   //|  Null
+ 	
+ 	set(1, 2, 3)                              //> res5: scala_note.nonEmptyNode = 1 Null 2 Null 3 Null Null
 }
 
 // e.g.1
@@ -78,6 +81,7 @@ abstract class linkedList[T] extends len with minOrMax[Int] {
   def include(x: T): linkedList[T]
   def contain(x: T): Boolean
   def append(x: linkedList[T]): linkedList[T]
+  def nth(x: Int): T
 }
 
 // Next we create an Empty linked list, which is basically an empty node.
@@ -104,6 +108,7 @@ class Empty extends linkedList[Int] with len with minOrMax[Int] {
 	def length() = 0
 	def min() = Int.MaxValue
 	def max() = Int.MinValue
+	def nth(x: Int) = throw new IndexOutOfBoundsException()
   override def toString() = ""
 }
 
@@ -113,6 +118,8 @@ class Empty extends linkedList[Int] with len with minOrMax[Int] {
 	Here cons is an implicit polymorphism. cons will get called in recursion in form
 	of Empty or IntLinkedList. Different form will respond differently when its method
 	gets called in recursion.
+	We have two major types of polymorphism: subtype and generic. Specifically, inheritance
+	can be viewed as subtype while type parameter is a form of generic.
 */
 
 // Also here we show a class can have at most one superclass but several traits implemented.
@@ -136,8 +143,12 @@ class IntLinkedList(x: Int, cons: linkedList[Int]) extends linkedList[Int] with 
   def min() = Math.min(head, tail.min())
   
   def max() = Math.max(head, tail.max())
-  
 
+  def nth(x: Int) = {
+  	if (x == 0) head
+  	else tail.nth(x-1)
+  }
+ 
   override def toString() = head + " " + this.tail.toString()
 
 }
@@ -183,7 +194,7 @@ class nonEmptyNode(x: Int, leftSubtree: simpleSet[Int], rightSubtree: simpleSet[
   def union(x: simpleSet[Int]) = {
   	((left union right) union x) include value
   }
-
+  
   // With recursion, it's very easy to implement preorder traversal, postorder traversal and
   // inorder traversal.
   // preorder
@@ -202,3 +213,19 @@ class nonEmptyNode(x: Int, leftSubtree: simpleSet[Int], rightSubtree: simpleSet[
 		}
 	*/
 }
+
+// e.g.3
+/*
+	In this example, we will define an object to explain how function is treated as object in
+	Scala.
+*/
+
+object set {
+	def apply(x: Int) = new nonEmptyNode(x, new emptyNode, new emptyNode)
+	def apply(x: Int, y: Int) = new nonEmptyNode(x, new emptyNode, new emptyNode).include(y)
+	def apply(x: Int, y: Int, z: Int) = new nonEmptyNode(x, new emptyNode, new emptyNode).include(y).include(z)
+}
+
+// Basically, each function in Scala is an object with an 'apply' method which can be
+// overloaded.
+ 
