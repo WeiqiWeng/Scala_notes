@@ -113,10 +113,11 @@ object collection {;import org.scalaide.worksheet.runtime.library.WorksheetSuppo
 	
 	biggerThan(l1, 3);System.out.println("""res12: List[Int] = """ + $show(res$12));$skip(95); val res$13 = 
 	// combining filter and filterNot into a pair we may get partition
-	l1 partition (x => x > 3);System.out.println("""res13: (List[Int], List[Int]) = """ + $show(res$13));$skip(156); val res$14 = 
+	l1 partition (x => x > 3);System.out.println("""res13: (List[Int], List[Int]) = """ + $show(res$13));$skip(294); val res$14 = 
 	
 	// If you want to take the first several elements satisfying the give condition, try takeWhile.
-	// the opposite is dropWhile
+	// the opposite is dropWhile. Just mind that here we take out the first several elements satisfying
+	// the condition until we meet with the first one not satisfying.
 	l1 takeWhile (x => x < 5);System.out.println("""res14: List[Int] = """ + $show(res$14));$skip(241); 
 	
 	// just like partition, a combination of takeWhile and dropWhile is span
@@ -126,27 +127,30 @@ object collection {;import org.scalaide.worksheet.runtime.library.WorksheetSuppo
 		case x :: xs =>
 			val (first, rest) = l partition (y => y == x)
 			first :: pack(rest)
-	};System.out.println("""pack: [T](l: List[T])List[List[T]]""");$skip(98); 
+	};System.out.println("""pack: [T](l: List[T])List[List[T]]""");$skip(100); 
+	
 	
 	def encode[T](l: List[T]): List[(T, Int)] = {
 		pack[T](l) map (xs => (xs.head, xs.length))
 	};System.out.println("""encode: [T](l: List[T])List[(T, Int)]""");$skip(64); 
 	
 	val data = List("a", "a", "a", "b", "b", "c", "c", "d", "a");System.out.println("""data  : List[String] = """ + $show(data ));$skip(22); val res$15 = 
-	encode[String](data);System.out.println("""res15: List[(String, Int)] = """ + $show(res$15));$skip(122); 
+	encode[String](data);System.out.println("""res15: List[(String, Int)] = """ + $show(res$15));$skip(22); val res$16 = 
+	
+	pack[String](data);System.out.println("""res16: List[List[String]] = """ + $show(res$16));$skip(122); 
 	
 	// Another important higher-order function is reduce.
 	def sum(l: List[Int]): Int = {
 		(0 :: l) reduceLeft (_ + _)
-	};System.out.println("""sum: (l: List[Int])Int""");$skip(9); val res$16 = 
-	sum(l1);System.out.println("""res16: Int = """ + $show(res$16));$skip(312); 
+	};System.out.println("""sum: (l: List[Int])Int""");$skip(9); val res$17 = 
+	sum(l1);System.out.println("""res17: Int = """ + $show(res$17));$skip(312); 
 	// Here you may put _ to represent new parameters. Also 0 is appended as the base.
 	// A more general function is foldLeft which requires a base passed explicitly as a parameter.
 	// foldLeft follows the pattern: (List foldLeft base)(binary operator)
 	def sum1(l: List[Int]): Int = {
 		(l foldLeft 0)(_ + _)
-	};System.out.println("""sum1: (l: List[Int])Int""");$skip(10); val res$17 = 
-	sum1(l1);System.out.println("""res17: Int = """ + $show(res$17));$skip(948); 
+	};System.out.println("""sum1: (l: List[Int])Int""");$skip(10); val res$18 = 
+	sum1(l1);System.out.println("""res18: Int = """ + $show(res$18));$skip(948); 
 	
 	/*
 		foldLeft forms a left-lean tree which basically does operation from left to right,
@@ -168,9 +172,9 @@ object collection {;import org.scalaide.worksheet.runtime.library.WorksheetSuppo
   	involves large number of elements.
 	*/
 	// Most of the methods overlap between vector and list, except ::.
-	val v1 = Vector(1, 2, 3);System.out.println("""v1  : scala.collection.immutable.Vector[Int] = """ + $show(v1 ));$skip(9); val res$18 = 
-	v1 :+ 2;System.out.println("""res18: scala.collection.immutable.Vector[Int] = """ + $show(res$18));$skip(9); val res$19 = 
-	2 +: v1;System.out.println("""res19: scala.collection.immutable.Vector[Int] = """ + $show(res$19));$skip(623); val res$20 = 
+	val v1 = Vector(1, 2, 3);System.out.println("""v1  : scala.collection.immutable.Vector[Int] = """ + $show(v1 ));$skip(9); val res$19 = 
+	v1 :+ 2;System.out.println("""res19: scala.collection.immutable.Vector[Int] = """ + $show(res$19));$skip(9); val res$20 = 
+	2 +: v1;System.out.println("""res20: scala.collection.immutable.Vector[Int] = """ + $show(res$20));$skip(623); val res$21 = 
 	
 	/*
 	 	Hierachy of collection
@@ -195,31 +199,31 @@ object collection {;import org.scalaide.worksheet.runtime.library.WorksheetSuppo
 	*/
 	
 	// another widely used sequence: Range
-	1 to 5;System.out.println("""res20: scala.collection.immutable.Range.Inclusive = """ + $show(res$20));$skip(30); val res$21 =   // to inclusive
-	1 until 5;System.out.println("""res21: scala.collection.immutable.Range = """ + $show(res$21));$skip(14); val res$22 =  // until exclusive
-	1 to 10 by 2;System.out.println("""res22: scala.collection.immutable.Range = """ + $show(res$22));$skip(170); val res$23 = 
+	1 to 5;System.out.println("""res21: scala.collection.immutable.Range.Inclusive = """ + $show(res$21));$skip(30); val res$22 =   // to inclusive
+	1 until 5;System.out.println("""res22: scala.collection.immutable.Range = """ + $show(res$22));$skip(14); val res$23 =  // until exclusive
+	1 to 10 by 2;System.out.println("""res23: scala.collection.immutable.Range = """ + $show(res$23));$skip(170); val res$24 = 
 	
 	//4. functions on sequence
 	/*
 		Next we have more exposure to sequence operations.
 	*/
 	// true if any/every one element satisfies property p
-	l1 exists (x => x > 3);System.out.println("""res23: Boolean = """ + $show(res$23));$skip(24); val res$24 = 
-	l1 forall (x => x > 3);System.out.println("""res24: Boolean = """ + $show(res$24));$skip(74); 
+	l1 exists (x => x > 3);System.out.println("""res24: Boolean = """ + $show(res$24));$skip(24); val res$25 = 
+	l1 forall (x => x > 3);System.out.println("""res25: Boolean = """ + $show(res$25));$skip(74); 
 	
 	// pair each element of x with each element of y
 	val lzip = l1 zip l1;System.out.println("""lzip  : List[(Int, Int)] = """ + $show(lzip ));$skip(57); 
 	// opposite operation of zip
-	val (ll, lr) = lzip.unzip;System.out.println("""ll  : List[Int] = """ + $show(ll ));System.out.println("""lr  : List[Int] = """ + $show(lr ));$skip(96); val res$25 = 
+	val (ll, lr) = lzip.unzip;System.out.println("""ll  : List[Int] = """ + $show(ll ));System.out.println("""lr  : List[Int] = """ + $show(lr ));$skip(96); val res$26 = 
 	// map each element and concatenate into one single collection
-	l1 flatMap (x => List(x, x+1));System.out.println("""res25: List[Int] = """ + $show(res$25));$skip(196); 
+	l1 flatMap (x => List(x, x+1));System.out.println("""res26: List[Int] = """ + $show(res$26));$skip(196); 
 	// sum, product, min, max are also available
 	
 	//e.g. list all combination of (x, y) where 1<=x<=n, 1<=y<=m
 	def comb(n: Int, m: Int) = {
 		(1 to n) flatMap (x => (1 to m) map (y => (x, y)))
-	};System.out.println("""comb: (n: Int, m: Int)scala.collection.immutable.IndexedSeq[(Int, Int)]""");$skip(12); val res$26 = 
-	comb(5, 4);System.out.println("""res26: scala.collection.immutable.IndexedSeq[(Int, Int)] = """ + $show(res$26));$skip(388); 
+	};System.out.println("""comb: (n: Int, m: Int)scala.collection.immutable.IndexedSeq[(Int, Int)]""");$skip(12); val res$27 = 
+	comb(5, 4);System.out.println("""res27: scala.collection.immutable.IndexedSeq[(Int, Int)] = """ + $show(res$27));$skip(388); 
   
   // Now with more options, we can write more elegant functions.
   // The following is a tail recursive way to define inner product.
@@ -230,21 +234,16 @@ object collection {;import org.scalaide.worksheet.runtime.library.WorksheetSuppo
   	}
   	acc(0, xs, ys)
   };System.out.println("""innerProd: (xs: List[Double], ys: List[Double])Double""");$skip(25); 
-  val ld = List(1.0,2.0);System.out.println("""ld  : List[Double] = """ + $show(ld ));$skip(20); val res$27 = 
-  innerProd(ld, ld);System.out.println("""res27: Double = """ + $show(res$27));$skip(180); 
+  val ld = List(1.0,2.0);System.out.println("""ld  : List[Double] = """ + $show(ld ));$skip(20); val res$28 = 
+  innerProd(ld, ld);System.out.println("""res28: Double = """ + $show(res$28));$skip(181); 
   
   // As comparison, the follow is a higher-order function version.
   def innerProd1(xs: List[Double], ys: List[Double]): Double = {
-  	(xs zip ys).map(t => t._1 * t._2) sum
-  };System.out.println("""innerProd1: (xs: List[Double], ys: List[Double])Double""");$skip(22); val res$28 = 
+  	(xs zip ys) map (t => t._1 * t._2) sum
+  };System.out.println("""innerProd1: (xs: List[Double], ys: List[Double])Double""");$skip(22); val res$29 = 
 	
-	innerProd1(ld, ld);System.out.println("""res28: Double = """ + $show(res$28));$skip(169); 
+	innerProd1(ld, ld);System.out.println("""res29: Double = """ + $show(res$29))}
 	
-	// It's even simpler to define a function to tell whether a given number is prime or not.
-	def isPrime(x: Int): Boolean = {
-		(2 until x) forall (t => x % t != 0)
-	};System.out.println("""isPrime: (x: Int)Boolean""");$skip(15); val res$29 = 
 	
-	isPrime(91);System.out.println("""res29: Boolean = """ + $show(res$29));$skip(13); val res$30 = 
-	isPrime(79);System.out.println("""res30: Boolean = """ + $show(res$30))}
+	
 }

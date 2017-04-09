@@ -2,10 +2,10 @@
 import math.Ordering
 /*
   In this worksheet we will talk about collections in Scala:
-  1. list
-  2. higher-order function on list
+  1. sequence
+  2. higher-order function on sequence
 */
-object collection {
+object collection1 {
   //1. List
   // First we introduce some predefined operators.
 	
@@ -98,6 +98,16 @@ object collection {
 	val chars = List("a", "c", "z", "q", "t") //> chars  : List[String] = List(a, c, z, q, t)
 	mergeSortOrdering[String](chars)          //> res10: List[String] = List(a, c, q, t, z)
 	
+	// Also List has a built-in method to do sorting. sortWith can take any self-defined order
+	// while sorted takes the system defined order.
+	chars sortWith (_.length < _.length)      //> res11: List[String] = List(a, c, z, q, t)
+	chars.sorted                              //> res12: List[String] = List(a, c, q, t, z)
+	
+	// Another Scala featured method is groupBy. It takes a condition to group the elements and
+	// returns a map.
+	chars groupBy (_.head)                    //> res13: scala.collection.immutable.Map[Char,List[String]] = Map(t -> List(t)
+                                                  //| , a -> List(a), q -> List(q), c -> List(c), z -> List(z))
+	
 	//2. higher-order function on list
 	
 	//map will have an operation on each element of a list
@@ -106,7 +116,7 @@ object collection {
 		l map (x => x * x)
 	}                                         //> sqList: (l: List[Int])List[Int]
 	
-	sqList(l1)                                //> res11: List[Int] = List(16, 4, 25, 1, 9)
+	sqList(l1)                                //> res14: List[Int] = List(16, 4, 25, 1, 9)
 	
 	//filter will pick out the elements satisfying given condition
 	//filterNot is similar
@@ -114,13 +124,14 @@ object collection {
 		l filter (x => x > n)
 	}                                         //> biggerThan: (l: List[Int], n: Int)List[Int]
 	
-	biggerThan(l1, 3)                         //> res12: List[Int] = List(4, 5)
+	biggerThan(l1, 3)                         //> res15: List[Int] = List(4, 5)
 	// combining filter and filterNot into a pair we may get partition
-	l1 partition (x => x > 3)                 //> res13: (List[Int], List[Int]) = (List(4, 5),List(2, 1, 3))
+	l1 partition (x => x > 3)                 //> res16: (List[Int], List[Int]) = (List(4, 5),List(2, 1, 3))
 	
 	// If you want to take the first several elements satisfying the give condition, try takeWhile.
-	// the opposite is dropWhile
-	l1 takeWhile (x => x < 5)                 //> res14: List[Int] = List(4, 2)
+	// the opposite is dropWhile. Just mind that here we take out the first several elements satisfying
+	// the condition until we meet with the first one not satisfying.
+	l1 takeWhile (x => x < 5)                 //> res17: List[Int] = List(4, 2)
 	
 	// just like partition, a combination of takeWhile and dropWhile is span
 	
@@ -131,26 +142,30 @@ object collection {
 			first :: pack(rest)
 	}                                         //> pack: [T](l: List[T])List[List[T]]
 	
+	
 	def encode[T](l: List[T]): List[(T, Int)] = {
 		pack[T](l) map (xs => (xs.head, xs.length))
 	}                                         //> encode: [T](l: List[T])List[(T, Int)]
 	
 	val data = List("a", "a", "a", "b", "b", "c", "c", "d", "a")
                                                   //> data  : List[String] = List(a, a, a, b, b, c, c, d, a)
-	encode[String](data)                      //> res15: List[(String, Int)] = List((a,4), (b,2), (c,2), (d,1))
+	encode[String](data)                      //> res18: List[(String, Int)] = List((a,4), (b,2), (c,2), (d,1))
+	
+	pack[String](data)                        //> res19: List[List[String]] = List(List(a, a, a, a), List(b, b), List(c, c), 
+                                                  //| List(d))
 	
 	// Another important higher-order function is reduce.
 	def sum(l: List[Int]): Int = {
 		(0 :: l) reduceLeft (_ + _)
 	}                                         //> sum: (l: List[Int])Int
-	sum(l1)                                   //> res16: Int = 15
+	sum(l1)                                   //> res20: Int = 15
 	// Here you may put _ to represent new parameters. Also 0 is appended as the base.
 	// A more general function is foldLeft which requires a base passed explicitly as a parameter.
 	// foldLeft follows the pattern: (List foldLeft base)(binary operator)
 	def sum1(l: List[Int]): Int = {
 		(l foldLeft 0)(_ + _)
 	}                                         //> sum1: (l: List[Int])Int
-	sum1(l1)                                  //> res17: Int = 15
+	sum1(l1)                                  //> res21: Int = 15
 	
 	/*
 		foldLeft forms a left-lean tree which basically does operation from left to right,
@@ -173,8 +188,8 @@ object collection {
 	*/
 	// Most of the methods overlap between vector and list, except ::.
 	val v1 = Vector(1, 2, 3)                  //> v1  : scala.collection.immutable.Vector[Int] = Vector(1, 2, 3)
-	v1 :+ 2                                   //> res18: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 2)
-	2 +: v1                                   //> res19: scala.collection.immutable.Vector[Int] = Vector(2, 1, 2, 3)
+	v1 :+ 2                                   //> res22: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 2)
+	2 +: v1                                   //> res23: scala.collection.immutable.Vector[Int] = Vector(2, 1, 2, 3)
 	
 	/*
 	 	Hierachy of collection
@@ -199,17 +214,17 @@ object collection {
 	*/
 	
 	// another widely used sequence: Range
-	1 to 5  // to inclusive                   //> res20: scala.collection.immutable.Range.Inclusive = Range(1, 2, 3, 4, 5)
-	1 until 5 // until exclusive              //> res21: scala.collection.immutable.Range = Range(1, 2, 3, 4)
-	1 to 10 by 2                              //> res22: scala.collection.immutable.Range = Range(1, 3, 5, 7, 9)
+	1 to 5  // to inclusive                   //> res24: scala.collection.immutable.Range.Inclusive = Range(1, 2, 3, 4, 5)
+	1 until 5 // until exclusive              //> res25: scala.collection.immutable.Range = Range(1, 2, 3, 4)
+	1 to 10 by 2                              //> res26: scala.collection.immutable.Range = Range(1, 3, 5, 7, 9)
 	
 	//4. functions on sequence
 	/*
 		Next we have more exposure to sequence operations.
 	*/
 	// true if any/every one element satisfies property p
-	l1 exists (x => x > 3)                    //> res23: Boolean = true
-	l1 forall (x => x > 3)                    //> res24: Boolean = false
+	l1 exists (x => x > 3)                    //> res27: Boolean = true
+	l1 forall (x => x > 3)                    //> res28: Boolean = false
 	
 	// pair each element of x with each element of y
 	val lzip = l1 zip l1                      //> lzip  : List[(Int, Int)] = List((4,4), (2,2), (5,5), (1,1), (3,3))
@@ -217,14 +232,14 @@ object collection {
 	val (ll, lr) = lzip.unzip                 //> ll  : List[Int] = List(4, 2, 5, 1, 3)
                                                   //| lr  : List[Int] = List(4, 2, 5, 1, 3)
 	// map each element and concatenate into one single collection
-	l1 flatMap (x => List(x, x+1))            //> res25: List[Int] = List(4, 5, 2, 3, 5, 6, 1, 2, 3, 4)
+	l1 flatMap (x => List(x, x+1))            //> res29: List[Int] = List(4, 5, 2, 3, 5, 6, 1, 2, 3, 4)
 	// sum, product, min, max are also available
 	
 	//e.g. list all combination of (x, y) where 1<=x<=n, 1<=y<=m
 	def comb(n: Int, m: Int) = {
 		(1 to n) flatMap (x => (1 to m) map (y => (x, y)))
 	}                                         //> comb: (n: Int, m: Int)scala.collection.immutable.IndexedSeq[(Int, Int)]
-	comb(5, 4)                                //> res26: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,1), (1
+	comb(5, 4)                                //> res30: scala.collection.immutable.IndexedSeq[(Int, Int)] = Vector((1,1), (1
                                                   //| ,2), (1,3), (1,4), (2,1), (2,2), (2,3), (2,4), (3,1), (3,2), (3,3), (3,4), 
                                                   //| (4,1), (4,2), (4,3), (4,4), (5,1), (5,2), (5,3), (5,4))
   
@@ -238,20 +253,15 @@ object collection {
   	acc(0, xs, ys)
   }                                               //> innerProd: (xs: List[Double], ys: List[Double])Double
   val ld = List(1.0,2.0)                          //> ld  : List[Double] = List(1.0, 2.0)
-  innerProd(ld, ld)                               //> res27: Double = 5.0
+  innerProd(ld, ld)                               //> res31: Double = 5.0
   
   // As comparison, the follow is a higher-order function version.
   def innerProd1(xs: List[Double], ys: List[Double]): Double = {
-  	(xs zip ys).map(t => t._1 * t._2) sum
+  	(xs zip ys) map (t => t._1 * t._2) sum
   }                                               //> innerProd1: (xs: List[Double], ys: List[Double])Double
 	
-	innerProd1(ld, ld)                        //> res28: Double = 5.0
+	innerProd1(ld, ld)                        //> res32: Double = 5.0
 	
-	// It's even simpler to define a function to tell whether a given number is prime or not.
-	def isPrime(x: Int): Boolean = {
-		(2 until x) forall (t => x % t != 0)
-	}                                         //> isPrime: (x: Int)Boolean
 	
-	isPrime(91)                               //> res29: Boolean = false
-	isPrime(79)                               //> res30: Boolean = true
+	
 }
